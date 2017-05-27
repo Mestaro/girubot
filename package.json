@@ -4,7 +4,8 @@
   "description": "A simple bot for Twitch chat and Discord with a small website too. Created for http://twitch.tv/vkgiru",
   "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node start.js"
   },
   "repository": {
     "type": "git",
