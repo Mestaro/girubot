@@ -1,0 +1,19 @@
+{
+  "name": "girubot",
+  "version": "2.0.0",
+  "description": "A simple bot for Twitch chat and Discord with a small website too. Created for http://twitch.tv/vkgiru",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SevenEightNine/girubot.git"
+  },
+  "author": "Matthew Staveley-Taylor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SevenEightNine/girubot/issues"
+  },
+  "homepage": "https://github.com/SevenEightNine/girubot#readme"
+}
