@@ -4,8 +4,11 @@
   "description": "A simple bot for Twitch chat and Discord with a small website too. Created for http://twitch.tv/vkgiru",
   "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node start.js"
+    "test": "node_modules/.bin/tape tests/**/*.js | node_modules/.bin/tap-spec",
+    "start": "node start.js",
+    "forever-start": "node_modules/.bin/forever start -n 1 -p ./ -a --plain -l misc/forever.log start.js",
+    "forever-stop": "node_modules/.bin/forever stop start.js",
+    "clean": "(test -f misc/forever.log || echo \"ERROR! No log file found at: $(pwd)/misc/log\") && cp /dev/null misc/forever.log"
   },
   "repository": {
     "type": "git",
@@ -16,5 +19,14 @@
   "bugs": {
     "url": "https://github.com/SevenEightNine/girubot/issues"
   },
-  "homepage": "https://github.com/SevenEightNine/girubot#readme"
+  "homepage": "https://github.com/SevenEightNine/girubot#readme",
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "irc": "^0.5.2"
+  },
+  "devDependencies": {
+    "forever": "^0.15.3",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
+  }
 }
