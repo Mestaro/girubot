@@ -15,9 +15,12 @@ module.exports = class Bot {
 	}
 
 	run() {
-		// Run bot from here
-		this.twitch.run();
-		this.discord.run();
-		this.website.run();
+		// Run each module
+
+		// TODO: Connect to database here
+
+		this.twitch.run();  // Connects to Twitch IRC chat
+		this.discord.run(); // Connects to Discord
+		this.website.run(); // Starts the website HTTP server
 	}
 };

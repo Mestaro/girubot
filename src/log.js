@@ -1,3 +1,4 @@
+"use strict";
 const chalk = require("chalk");
 const logSymbols = require("log-symbols");
 const timestamp = require("time-stamp");
@@ -12,7 +13,11 @@ const logLevels = {
 
 module.exports = class {
 	constructor(bot) {
-		this.logLevel = bot.config.dev ? logLevels.DEBUG : logLevels.INFO;
+		// If we are not running in development mode, only show messages
+		// with a log level below info (success, warn, error)
+		this.logLevel = bot.config.dev ? logLevels.DEBUG : logLevels.SUCCESS;
+
+		// Use this format for printing timestamps in each log message
 		this.timestampFormat = "YYYY/MM/DD-HH:mm:ss";
 	}
 
