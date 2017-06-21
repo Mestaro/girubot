@@ -8,11 +8,14 @@ try {
 	secrets = require("./secrets");
 } catch (e) {
 	// 'secrets.js' file was not found, print message to user
-	console.error(chalk.red.underline(`Fatal Error: The 'secrets.js' file \
-\	was not found in the current directory. This file was added to the \
-\	.gitignore to avoid any leakage of private information. For more \
-\	information see https://github.com/64/girubot/blob/master/secrets.js
-	`));
+	// TODO: Fix indentation here, this looks too messy in the source code
+	console.error(chalk.red.underline("Fatal Error:"),
+`The 'secrets.js' file \
+was not found in the current directory. This file was added to the \
+.gitignore to avoid any leakage of private information. For more \
+information see https://github.com/64/girubot/blob/master/secrets.js
+`	);
+	process.exit(-1);
 }
 
 const configuration = {

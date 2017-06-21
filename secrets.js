@@ -9,6 +9,6 @@ module.exports = {
 	twitchClientID: "",
 
 	// Twitch OAuth IRC token - used to connect to Twitch chat
-	// See https://twitchapps.com/tmi/ 
+	// See https://twitchapps.com/tmi/
 	twitchTokenIRC: ""
-}
+};
