@@ -1,12 +1,11 @@
 {
   "name": "girubot",
-  "version": "2.0.0",
+  "version": "0.0.0",
   "description": "A simple bot for Twitch chat and Discord with a small website too. Created for http://twitch.tv/vkgiru",
   "main": "start.js",
   "scripts": {
-    "test": "node_modules/.bin/tape tests/**/*.js | node_modules/.bin/tap-spec",
     "start": "node start.js",
-    "forever-start": "node_modules/.bin/forever start -n 1 -p ./ -a --plain -l misc/forever.log start.js",
+    "forever-start": "PROD=true node_modules/.bin/forever start -n 1 -p ./ -a --plain -l misc/forever.log start.js",
     "forever-stop": "node_modules/.bin/forever stop start.js",
     "clean": "(test -f misc/forever.log || echo \"ERROR! No log file found at: $(pwd)/misc/log\") && cp /dev/null misc/forever.log"
   },
@@ -21,12 +20,14 @@
   },
   "homepage": "https://github.com/SevenEightNine/girubot#readme",
   "dependencies": {
+    "chalk": "^1.1.3",
     "discord.js": "^11.1.0",
-    "irc": "^0.5.2"
+    "irc": "^0.5.2",
+    "log-symbols": "^1.0.2",
+    "mongoose": "^4.10.7",
+    "time-stamp": "^2.0.0"
   },
   "devDependencies": {
-    "forever": "^0.15.3",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.6.3"
+    "forever": "^0.15.3"
   }
 }
