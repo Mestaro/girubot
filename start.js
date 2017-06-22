@@ -28,7 +28,16 @@ const configuration = {
 	// Use dev: true unless PROD=true enabled
 	dev: !(process.env.PROD == "true"),
 
+	// Enables very verbose debugging
+	verbose: process.env.VERBOSE == "true",
 };
 
 const bot = new Bot(configuration);
+
+// When we receive SIGINT, initiate cleanup
+process.on("SIGINT", () => {
+	bot.cleanup();
+	process.exit(0);
+});
+
 bot.run();

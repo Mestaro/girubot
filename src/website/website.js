@@ -7,4 +7,8 @@ module.exports = class Website {
 	run() {
 		this.bot.log.info("Starting website module.");
 	}
+
+	cleanup() {
+		
+	}
 };

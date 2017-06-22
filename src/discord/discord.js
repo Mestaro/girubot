@@ -7,4 +7,8 @@ module.exports = class Discord {
 	run() {
 		this.bot.log.info("Starting Discord module.");
 	}
+
+	cleanup() {
+		
+	}
 };

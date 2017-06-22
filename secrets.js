@@ -10,7 +10,7 @@ module.exports = {
 
 	// Twitch OAuth IRC token - used to connect to Twitch chat
 	// See https://twitchapps.com/tmi/
-	twitchTokenIRC: "",
+	twitchTokenIRC: "oauth:md33pkc1canolw9e0ge7hkhb8uerjr",
 
 	// Database username and password - used to connect to MongoDB instance
 	// See https://docs.mongodb.com/manual/core/authentication/

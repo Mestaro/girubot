@@ -23,4 +23,12 @@ module.exports = class Bot {
 		this.discord.run(); // Connects to Discord
 		this.website.run(); // Starts the website HTTP server
 	}
+
+	// Called when the process receives SIGINT
+	cleanup() {
+		this.log.info("Received SIGINT, initiating cleanup.");
+		this.twitch.cleanup();
+		this.discord.cleanup();
+		this.website.cleanup();
+	}
 };

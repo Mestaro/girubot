@@ -15,6 +15,7 @@ module.exports = class {
 	constructor(bot) {
 		// If we are not running in development mode, only show messages
 		// with a log level below info (success, warn, error)
+		// TODO: How should 'verbose' interact with this?
 		this.logLevel = bot.config.dev ? logLevels.DEBUG : logLevels.SUCCESS;
 
 		// Use this format for printing timestamps in each log message
