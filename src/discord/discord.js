@@ -2,6 +2,9 @@
 module.exports = class Discord {
 	constructor(bot) {
 		this.bot = bot;
+		
+		// Add close event listener
+		process.on("asyncExit", this.cleanup.bind(this));
 	}
 
 	run() {
@@ -9,6 +12,6 @@ module.exports = class Discord {
 	}
 
 	cleanup() {
-		
+
 	}
 };

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/SevenEightNine/girubot#readme",
   "dependencies": {
+    "async-kit": "^2.2.3",
     "chalk": "^1.1.3",
     "discord.js": "^11.1.0",
     "log-symbols": "^1.0.2",

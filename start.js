@@ -1,6 +1,7 @@
 "use strict";
 const Bot = require("./src/bot");
 const chalk = require("chalk");
+const asyncUtil = require("async-kit");
 
 let secrets = {};
 
@@ -30,14 +31,17 @@ const configuration = {
 
 	// Enables very verbose debugging
 	verbose: process.env.VERBOSE == "true",
+
+	// Url to MongoDB database
+	dbUrl: "mongodb://localhost/bot"
 };
 
 const bot = new Bot(configuration);
 
 // When we receive SIGINT, initiate cleanup
 process.on("SIGINT", () => {
-	bot.cleanup();
-	process.exit(0);
+	// This function emits the "asyncExit" event on the process object
+	asyncUtil.exit(0);
 });
 
 bot.run();

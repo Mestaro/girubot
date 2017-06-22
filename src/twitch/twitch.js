@@ -4,6 +4,9 @@ const tmi = require("tmi.js");
 module.exports = class Twitch {
 	constructor(bot) {
 		this.bot = bot;
+
+		// Add close event listener
+		process.on("asyncExit", this.cleanup.bind(this));
 	}
 
 	run() {
@@ -15,7 +18,7 @@ module.exports = class Twitch {
 		const options = {
 			options: {
 				// Identifies us to the twitch web API
-				clientId,
+				clientId
 			},
 			connection: {
 				// Auto-reconnect when disconnected
@@ -52,19 +55,35 @@ module.exports = class Twitch {
 		this.client.connect();
 	}
 
-	cleanup() {
-		// Disconnect when program exits
-		this.client.disconnect();
+	// Called when the program exits
+	cleanup(exitCode, timeout, done) {
+		// Remove the normal disconnected listener
+		this.client.removeAllListeners("disconnected");
+
+		// Disconnect from chat
+		this.client.disconnect()
+			.then(() => {
+				this.bot.log.info("Disconnected from IRC.");
+				done();
+			})
+			.catch(err => {
+				this.bot.log.warn("IRC already disconnected");
+			});
+	}
+
+	// Sends a message to the IRC channel
+	say(text) {
+		this.client.say("vkgiru", text);
 	}
 
 	// Called when the bot successfully connects to the chat
 	onConnect(address, port) {
-		this.bot.log.success(`Connected to Twitch IRC (${address}:${port})`);
+		this.bot.log.success(`Connected to IRC (${address}:${port})`);
 	}
 
 	// Called whenever a chat message is received from the IRC server
 	onChat(from, message) {
-		this.bot.log.info(`${from.username}: ${message}`);
+		this.say(`${from.username}: ${message}`);
 	}
 
 	// Called when the bot gets disconnected
