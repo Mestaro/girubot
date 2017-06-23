@@ -1,9 +1,19 @@
 "use strict";
 const tmi = require("tmi.js");
+const Bottleneck = require("bottleneck");
 
 module.exports = class Twitch {
 	constructor(bot) {
 		this.bot = bot;
+
+		// Initialise a new rate limiter so that we don't spam the IRC
+		// with messages. Our rate limit depends on whether we're a
+		// moderator in the channel or not. Currently, the limit for
+		// moderators is 100 commands or messages per 30 seconds, but
+		// for normal users this is 20 messages in the same time.
+		// See https://help.twitch.tv/customer/portal/articles/1302780-twitch-irc
+		// TODO: Check if we're actually a moderator and edit this limit
+		this.limiter = new Bottleneck(1, 500);
 
 		// Add close event listener
 		process.on("asyncExit", this.cleanup.bind(this));
@@ -47,7 +57,7 @@ module.exports = class Twitch {
 		this.client.on("chat",
 			(channel, from, message, self) => {
 				if (!self) // Ignore messages sent by us
-					this.onChat.call(this, from, message)
+					this.onChat.call(this, from, message);
 			}
 		);
 
@@ -73,7 +83,16 @@ module.exports = class Twitch {
 
 	// Sends a message to the IRC channel
 	say(text) {
-		this.client.say("vkgiru", text);
+		// Make sure our messages are rate limited (see constructor)
+		// TODO: Can we clean this up?
+		var self = this;
+		function sayWrapper(msg) {
+			return self.client.say("vkgiru", msg)
+				.catch(err => {
+					self.bot.log.warn("Chat message failed to send");
+				});
+		}
+		this.limiter.schedule(sayWrapper, text);
 	}
 
 	// Called when the bot successfully connects to the chat
