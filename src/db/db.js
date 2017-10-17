@@ -1,10 +1,10 @@
 "use strict";
-const mongoose = require("mongoose");
+const mongo = require("mongodb");
 
 module.exports = class Db {
 	constructor(bot) {
 		this.bot = bot;
-		this.connection = mongoose.createConnection();
+		this.client = new mongo.MongoClient();
 
 		// Add close event listener
 		process.on("asyncExit", this.cleanup.bind(this));
@@ -12,42 +12,43 @@ module.exports = class Db {
 
 	// Initiate the connection, running the callback when done
 	run(callback) {
-		const url = this.bot.config.dbUrl;
-		this.bot.log.info(`Connecting to database: ${url}`);
+		const user = this.bot.config.secrets.dbUsername;
+		const pass = this.bot.config.secrets.dbPassword;
+		const dbName = this.bot.config.dbName;
+		const url = `mongodb://${user}:${pass}@localhost/${dbName}?authSource=admin`;
+		this.bot.log.info(`Connecting to database: mongodb://localhost/${dbName}`);
 
-		// Add event listeners
-		this.connection.on("error", this.onError.bind(this));
-		this.connection.on("close", this.onClose.bind(this));
-		this.connection.on("open",
-			() => this.onOpen.call(this, callback)
+		this.client.connect(url, {},
+			(err, db) => this.onOpen.call(this, err, db, callback)
 		);
-
-		// Open the database connection, passing in our credentials
-		this.connection.open(url, {
-			user: this.bot.config.secrets.dbUsername,
-			pass: this.bot.config.secrets.dbPassword
-		});
 	}
 
 	// Called when the program exits
 	cleanup(exitCode, timeout, done) {
 		// Remove normal event listener
-		this.connection.removeAllListeners("close");
+		this.db.removeAllListeners("close");
 
 		// Close the database connection
-		this.connection.close(() => {
+		this.db.close(() => {
 			this.bot.log.info("Disconnected from DB.");
 			done();
 		});
 	}
 
 	// Perform initialisation, then invoke the user callback
-	onOpen(callback) {
-		this.bot.log.success("Successfully opened database connection");
-		callback();
+	onOpen(error, db, callback) {
+		if (error) {
+			this.onError(error);
+		} else {
+			this.bot.log.success("Successfully opened database connection");
+			this.db = db;
+			this.db.on("error", this.onError.bind(this));
+			this.db.on("close", this.onClose.bind(this));
+			callback();
+		}
 	}
 
-	//
+	// Called when there is an error with the connection
 	onError(err) {
 		this.bot.log.error(`Database connection error: ${err}`);
 		this.bot.log.debug("Ensure all the DB details are correct.");

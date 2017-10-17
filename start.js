@@ -33,7 +33,10 @@ const configuration = {
 	verbose: process.env.VERBOSE == "true",
 
 	// Url to MongoDB database
-	dbUrl: "mongodb://localhost/bot"
+	dbName: "bot",
+
+	// Interval between fetches of stream data
+	streamPollInterval: 60
 };
 
 const bot = new Bot(configuration);

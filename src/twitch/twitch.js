@@ -15,6 +15,8 @@ module.exports = class Twitch {
 		// TODO: Check if we're actually a moderator and edit this limit
 		this.limiter = new Bottleneck(1, 500);
 
+		this.streamRunning = false;
+
 		// Add close event listener
 		process.on("asyncExit", this.cleanup.bind(this));
 	}
@@ -61,8 +63,45 @@ module.exports = class Twitch {
 			}
 		);
 
+		this.pollStreamData(true);
+		setInterval(() => this.pollStreamData.bind(this), this.bot.config.streamPollInterval * 1000, false);
+
 		// Actually initiate the connection
 		this.client.connect();
+	}
+
+	// Checks to see if the stream is online or offline
+	pollStreamData(noAction) {
+		this.client.api({
+			url: "https://api.twitch.tv/helix/streams?user_login=vkgiru",
+			headers: { "Client-ID": this.bot.config.secrets.twitchClientID },
+			method: "GET"
+		}, (err, res, body) => {
+			if (err) {
+				this.bot.log.warn("Failed to get Twitch stream information.");
+			} else {
+				if (body.data.length === 0 || body.data[0].type !== "live" && this.streamRunning) {
+					this.streamRunning = false;
+					if (!noAction)
+						this.streamOffline();
+				} else if (body.data.length > 0 && body.data[0].type === "live" && !this.streamRunning) {
+					this.streamRunning = true;
+					if (!noAction)
+						this.streamOnline();
+				}
+			}
+		});
+	}
+
+	// Called when the stream goes offline
+	streamOffline() {
+		this.bot.log.info("Stream now offline.");
+	}
+
+	// Called when the stream goes online
+	streamOnline() {
+		this.bot.log.info("Stream now online.");
+		this.bot.discord.notifyStreamStart();
 	}
 
 	// Called when the program exits
@@ -77,7 +116,8 @@ module.exports = class Twitch {
 				done();
 			})
 			.catch(err => {
-				this.bot.log.warn("IRC already disconnected");
+				this.bot.log.warn("IRC already disconnected.");
+				done();
 			});
 	}
 
@@ -89,7 +129,7 @@ module.exports = class Twitch {
 		function sayWrapper(msg) {
 			return self.client.say("vkgiru", msg)
 				.catch(err => {
-					self.bot.log.warn("Chat message failed to send");
+					self.bot.log.warn("Chat message failed to send.");
 				});
 		}
 		this.limiter.schedule(sayWrapper, text);
@@ -102,7 +142,7 @@ module.exports = class Twitch {
 
 	// Called whenever a chat message is received from the IRC server
 	onChat(from, message) {
-		this.say(`${from.username}: ${message}`);
+		//this.say(`${from.username}: ${message}`);
 	}
 
 	// Called when the bot gets disconnected
