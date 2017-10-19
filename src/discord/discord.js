@@ -23,7 +23,6 @@ module.exports = class Discord {
 
 	onReady() {
 		this.bot.log.success("Connected to Discord.");
-		this.notifyStreamStart();
 	}
 
 	onError(error) {
