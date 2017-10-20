@@ -64,7 +64,7 @@ module.exports = class Twitch {
 		);
 
 		this.pollStreamData(true);
-		setInterval(() => this.pollStreamData.bind(this), this.bot.config.streamPollInterval * 1000, false);
+		setInterval(this.pollStreamData.bind(this, false), this.bot.config.streamPollInterval * 1000);
 
 		// Actually initiate the connection
 		this.client.connect();
@@ -80,11 +80,11 @@ module.exports = class Twitch {
 			if (err) {
 				this.bot.log.warn("Failed to get Twitch stream information.");
 			} else {
-				if (body.data.length === 0 || body.data[0].type !== "live" && this.streamRunning) {
+				if ((body.data.length === 0 || body.data[0].type !== "live") && this.streamRunning) {
 					this.streamRunning = false;
 					if (!noAction)
 						this.streamOffline();
-				} else if (body.data.length > 0 && body.data[0].type === "live" && !this.streamRunning) {
+				} else if ((body.data.length > 0 && body.data[0].type === "live") && !this.streamRunning) {
 					this.streamRunning = true;
 					if (!noAction)
 						this.streamOnline();
@@ -94,6 +94,7 @@ module.exports = class Twitch {
 	}
 
 	// Called when the stream goes offline
+	// Note: also gets called when bot comes online for the first time.
 	streamOffline() {
 		this.bot.log.info("Stream now offline.");
 	}

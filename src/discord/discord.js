@@ -39,6 +39,13 @@ module.exports = class Discord {
 				break;
 			case "-assign":
 				this.assignRole(message, false);
+				break;
+			case "+help":
+				message.channel.send("cheeky fucker");
+				break;
+			case "+source":
+				message.channel.send("Made by Vin¢ - https://github.com/64/girubot");
+				break;
 			default:
 				break;
 		}
@@ -59,13 +66,13 @@ module.exports = class Discord {
 			return i % 2 ? v : v.split(' ')
 		})).filter(Boolean);
 		if (data.length != 3)
-			return message.channel.send(`<@${message.author.id}>, invalid syntax, use: \`+assign <user> <role>\`.`);
+			return message.channel.send(`<@${message.author.id}>, invalid syntax, use: \`+assign <user> <role>\` or \`-assign <user> <role>\`.`);
 
 		let user = message.guild.members.find("nickname", data[1]);
 		if (user === null)
 			user = message.guild.members.find((user) => user.user.username === data[1]);
-		if (user === null)
-			user = message.guild.members.get(data[1].substr(2, 18));
+		if (user === null && data[1].startsWith("<@"))
+			user = message.guild.members.get(data[1].substr(data[1].charAt(2) === "!" ? 3 : 2, 18));
 		if (user === null || typeof user == "undefined")
 			return message.channel.send(`<@${message.author.id}>, cannot find user '${data[1]}'.`);
 		if (user.id != message.author.id && this.isModerator(message.guild, user.id))

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node start.js",
     "forever-start": "PROD=true node_modules/.bin/forever start -n 1 -p ./ -a --plain -l misc/forever.log start.js",
-    "forever-stop": "node_modules/.bin/forever stop start.js",
+    "forever-stop": "node_modules/.bin/forever stop start.js -killSignal SIGTERM",
     "clean": "(test -f misc/forever.log || echo \"ERROR! No log file found at: $(pwd)/misc/log\") && cp /dev/null misc/forever.log"
   },
   "repository": {
