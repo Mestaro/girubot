@@ -23,6 +23,32 @@ module.exports = class Db {
 		);
 	}
 
+	clampUser(user_id, name, lock) {
+		const discord = this.db.collection("discord");
+		if (lock) {
+			discord.updateOne({ _id: user_id }, { $set: { clamped: name } }, { upsert: true }, (err, res) => {
+				if (err)
+					throw err;
+				this.bot.log.debug(`Added clamped user ${user_id} - ${name}.`);
+			});
+		} else {
+			discord.findOneAndDelete({ _id: user_id }, (err, res) => {
+				if (err)
+					throw err;
+				this.bot.log.debug(`Removed clamped user ${user_id}.`);
+			});
+		}
+	}
+
+	getClampedUsers(cb) {
+		const discord = this.db.collection("discord");
+		discord.find({ clamped: { $exists: true } }).toArray((err, docs) => {
+			if (err)
+				throw err;
+			cb(docs);
+		});
+	}
+
 	// Called when the program exits
 	cleanup(exitCode, timeout, done) {
 		// Remove normal event listener
