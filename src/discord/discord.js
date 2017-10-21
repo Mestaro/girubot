@@ -63,7 +63,7 @@ module.exports = class Discord {
 		// Coutsavlis' ID: 317306705186652160
 		if (message.author.id == "317306705186652160") {
 			const rand = Math.random();
-			if (rand < (1 / 50)) {
+			if (rand < (1 / 2)) {
 				const emoji = message.guild.emojis.find("name", "residentsleeper");
 				if (emoji === null) {
 					this.bot.log.warn("Failed to find residentsleeper emoji.");
